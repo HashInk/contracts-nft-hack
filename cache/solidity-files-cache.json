@@ -1,0 +1,107 @@
+{
+  "_format": "hh-sol-cache-2",
+  "files": {
+    "D:\\Work\\hashink\\hashink-contracts\\contracts\\AutographContract.sol": {
+      "lastModificationDate": 1616170966242,
+      "contentHash": "c87e696bb6403634aff19d4e6730b467",
+      "sourceName": "contracts/AutographContract.sol",
+      "solcConfig": {
+        "version": "0.7.3",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.7.0"
+      ],
+      "artifacts": [
+        "AutographContract"
+      ]
+    },
+    "D:\\Work\\hashink\\hashink-contracts\\contracts\\AutographRequestContract.sol": {
+      "lastModificationDate": 1616170950722,
+      "contentHash": "405c22a7e6d78685652c8a6c198c66e6",
+      "sourceName": "contracts/AutographRequestContract.sol",
+      "solcConfig": {
+        "version": "0.7.3",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.7.0"
+      ],
+      "artifacts": [
+        "AutographRequestContract"
+      ]
+    },
+    "D:\\Work\\hashink\\hashink-contracts\\contracts\\CelebrityContract.sol": {
+      "lastModificationDate": 1616171190225,
+      "contentHash": "be47366dea313cec678440c0220f6b15",
+      "sourceName": "contracts/CelebrityContract.sol",
+      "solcConfig": {
+        "version": "0.7.3",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.7.0"
+      ],
+      "artifacts": [
+        "CelebrityContract"
+      ]
+    }
+  }
+}

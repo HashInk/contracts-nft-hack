@@ -30,6 +30,7 @@ contract AutographRequestContract is Ownable {
 
     /**
      * Contract constructor.
+     * - _celebrityContract: Celebrity contract address.
      * - _autographContract: NFT Token address.
      */
     constructor(address _celebrityContract, address _autographContract) {
@@ -79,7 +80,7 @@ contract AutographRequestContract is Ownable {
         require(address(this).balance >= request.price, 'Balance should be greater than request price');
 
         // Minting the NFT
-        // TODO: !!!!!!!!!!!!!!!!!!!!!!!
+        autographContract.mint(request.from, nftHash, metadata);
         // TODO: Check if token has been minted successfully
 
         // Adding request price to celeb balance

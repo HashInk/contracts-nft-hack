@@ -186,4 +186,37 @@ describe("Hashink Contracts", function () {
 
     });
 
+    describe("Autograph Contract", function() {
+
+        it("Should mint a correct NFT after signing a request", async function () {
+            const responseTime = 0;
+
+            await celebrityContract.connect(addr1).createCelebrity(name, price, responseTime);
+            await requestsContract.connect(addr2).createRequest(addr1.address, {value: price});
+            await requestsContract.connect(addr1).signRequest(0, hash, metadata);
+
+            expect(await autographContract.totalSupply()).to.equal(1);
+            expect(await autographContract.ownerOf(1)).to.equal(addr2.address);
+            expect(await autographContract.balanceOf(addr2.address)).to.equal(1);
+        });
+
+        it("Should transfer a token between accounts", async function () {
+            const responseTime = 0;
+
+            await celebrityContract.connect(addr1).createCelebrity(name, price, responseTime);
+            await requestsContract.connect(addr2).createRequest(addr1.address, {value: price});
+            await requestsContract.connect(addr1).signRequest(0, hash, metadata);
+
+            await autographContract.connect(addr2).approve(addrs[0].address, 1);
+            await autographContract.connect(addrs[0]).transferFrom(addr2.address, addrs[0].address, 1);
+
+            expect(await autographContract.totalSupply()).to.equal(1);
+            expect(await autographContract.ownerOf(1)).not.equal(addr2.address);
+            expect(await autographContract.ownerOf(1)).to.equal(addrs[0].address);
+            expect(await autographContract.balanceOf(addr2.address)).to.equal(0);
+            expect(await autographContract.balanceOf(addrs[0].address)).to.equal(1);
+        });
+
+    });
+
 });

@@ -8,14 +8,17 @@ import "hardhat/console.sol";
  */
 contract CelebrityContract {
 
+    // Structs
     struct Celebrity {
         string name;
         uint price;
         uint responseTime;
     }
 
+    // Variables
     mapping(address => Celebrity) public celebrities;
 
+    // Events
     event CelebrityCreated(address indexed owner, string name, uint price, uint responseTime);
     event CelebrityDeleted(address indexed owner);
     event CelebrityUpdated(address indexed owner, string name, uint price, uint responseTime);

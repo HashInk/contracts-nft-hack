@@ -36,8 +36,8 @@
       ]
     },
     "D:\\Work\\hashink\\hashink-contracts\\contracts\\AutographRequestContract.sol": {
-      "lastModificationDate": 1616170950722,
-      "contentHash": "405c22a7e6d78685652c8a6c198c66e6",
+      "lastModificationDate": 1616177243922,
+      "contentHash": "494662a78cef0b3cb713a25d7dfc79fd",
       "sourceName": "contracts/AutographRequestContract.sol",
       "solcConfig": {
         "version": "0.7.3",
@@ -61,7 +61,11 @@
           }
         }
       },
-      "imports": [],
+      "imports": [
+        "@openzeppelin/contracts/access/Ownable.sol",
+        "./CelebrityContract.sol",
+        "./AutographContract.sol"
+      ],
       "versionPragmas": [
         "^0.7.0"
       ],
@@ -70,8 +74,8 @@
       ]
     },
     "D:\\Work\\hashink\\hashink-contracts\\contracts\\CelebrityContract.sol": {
-      "lastModificationDate": 1616175330309,
-      "contentHash": "7d886920b962d7d660ab4733b51e487c",
+      "lastModificationDate": 1616176433135,
+      "contentHash": "577027f786a174ef48cf122fcdb47823",
       "sourceName": "contracts/CelebrityContract.sol",
       "solcConfig": {
         "version": "0.7.3",
@@ -137,6 +141,76 @@
       ],
       "artifacts": [
         "console"
+      ]
+    },
+    "D:\\Work\\hashink\\hashink-contracts\\node_modules\\@openzeppelin\\contracts\\access\\Ownable.sol": {
+      "lastModificationDate": 1616169638483,
+      "contentHash": "6748815a5b45c4aeeda56819f41190e0",
+      "sourceName": "@openzeppelin/contracts/access/Ownable.sol",
+      "solcConfig": {
+        "version": "0.7.3",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "../utils/Context.sol"
+      ],
+      "versionPragmas": [
+        ">=0.6.0 <0.8.0"
+      ],
+      "artifacts": [
+        "Ownable"
+      ]
+    },
+    "D:\\Work\\hashink\\hashink-contracts\\node_modules\\@openzeppelin\\contracts\\utils\\Context.sol": {
+      "lastModificationDate": 1616169637626,
+      "contentHash": "2adbd82f6d055a4751566d4671512b03",
+      "sourceName": "@openzeppelin/contracts/utils/Context.sol",
+      "solcConfig": {
+        "version": "0.7.3",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        ">=0.6.0 <0.8.0"
+      ],
+      "artifacts": [
+        "Context"
       ]
     }
   }

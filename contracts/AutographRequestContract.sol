@@ -1,6 +1,62 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.7.0;
 
-contract AutographRequestContract {
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "./CelebrityContract.sol";
+import "./AutographContract.sol";
+
+contract AutographRequestContract is Ownable {
+
+    // Structs
+    struct Request {
+        address from;
+        address to;
+        uint price;
+        uint responseTime;
+        uint created;
+    }
+
+    // Variables
+    CelebrityContract private celebrityContract;
+    AutographContract private autographContract;
+    Request[] private requests;
+    uint private feePercent;
+
+    // Events
+    event RequestCreated(uint id, address indexed from, address indexed to, uint price, uint responseTime, uint created);
+
+    /**
+     * Contract constructor.
+     * - _autographContract: NFT Token address.
+     */
+    constructor(address _celebrityContract, address _autographContract) {
+        celebrityContract = CelebrityContract(_celebrityContract);
+        autographContract = AutographContract(_autographContract);
+        feePercent = 10; // %
+    }
+
+    /**
+     * Function used to request a new NFT (autograph) to a celeb.
+     * - to: Celeb address or recipient.
+     * - responseTime: Request response time.
+     */
+    function createRequest(address to) public payable {     
+        (,uint price, uint responseTime) = celebrityContract.getCelebrity(to);
+        require(msg.value == price, 'The amount paid is not equal to the sale price');
+
+        // Adding paid price to contract balance
+        Request memory newRequest = Request(msg.sender, to, price, responseTime, block.timestamp);
+        requests.push(newRequest);
+        uint id = requests.length - 1;
+
+        emit RequestCreated(id, newRequest.from, newRequest.to, newRequest.price, newRequest.responseTime, newRequest.created);
+    }
+
+    /**
+     * Method used to return the contract balance.
+     */
+    function getBalance() public view returns (uint) {
+        return address(this).balance;
+    }
 
 }

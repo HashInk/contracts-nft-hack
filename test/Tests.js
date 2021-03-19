@@ -14,8 +14,16 @@ describe("Hashink Contracts", function () {
     let addr1;
     let addr2;
     let addrs;
+    let name;
+    let price;
+    let responseTime;
 
     beforeEach(async function () {
+
+        // Initializing variables
+        name = "Justin Shenkarow";
+        price = ethers.utils.parseEther('2');
+        responseTime = 2;
     
         // Deploying celebrities contract
         CelebrityContract = await ethers.getContractFactory("CelebrityContract");
@@ -40,9 +48,7 @@ describe("Hashink Contracts", function () {
     describe("Celebrity Contract", function() {
 
         it("Should create a new celebrity", async function () { 
-            const name = "Justin Shenkarow";
-            const price = ethers.utils.parseEther('2');
-            const responseTime = 2;
+            responseTime = 2;
 
             await expect(
                 celebrityContract.connect(addr1).createCelebrity(name, price, responseTime)
@@ -55,11 +61,7 @@ describe("Hashink Contracts", function () {
             expect(celeb[2]).to.equal(responseTime);
         });
 
-        it("Should update celebrity information", async function () { 
-            const name = "Justin Shenkarow";
-            const price = ethers.utils.parseEther('2');
-            const responseTime = 2;
-
+        it("Should update celebrity information", async function () {
             await celebrityContract.connect(addr1).createCelebrity("Vitalik Buterin", ethers.utils.parseEther('1'), 4);
             await celebrityContract.connect(addr1).createCelebrity(name, price, responseTime);
             
@@ -76,10 +78,6 @@ describe("Hashink Contracts", function () {
         describe("Create Request", function() {
 
             it("Should create a new autograph request", async function () {
-                const name = "Justin Shenkarow";
-                const price = ethers.utils.parseEther('2');
-                const responseTime = 2;
-                
                 await celebrityContract.connect(addr1).createCelebrity(name, price, responseTime);
                 await expect(
                     requestsContract.connect(addr2).createRequest(addr1.address, {value: price}))
@@ -89,6 +87,41 @@ describe("Hashink Contracts", function () {
                 expect(await requestsContract.getBalance()).to.equal(price);
             });
         
+        });
+
+        describe("Delete Request", function() {
+
+            it("Should be able to delete a request when locking period expired", async function () {
+                responseTime = 0;
+                
+                await celebrityContract.connect(addr1).createCelebrity(name, price, responseTime);
+                await requestsContract.connect(addr2).createRequest(addr1.address, {value: price});
+                expect(await requestsContract.getBalance()).to.equal(price);
+
+                await requestsContract.connect(addr2).deleteRequest(0);
+                expect(await requestsContract.getBalance()).to.equal(0);
+            });
+
+            it("Shouldn't delete a request before locking period expired", async function () {
+                await celebrityContract.connect(addr1).createCelebrity(name, price, responseTime);
+                await requestsContract.connect(addr2).createRequest(addr1.address, {value: price});
+
+                await expect(
+                    requestsContract.connect(addr2).deleteRequest(0)
+                ).to.be.revertedWith('You must wait the response time to delete this request');
+            });
+
+            it("Shouldn't delete a request when sender is not the owner ", async function () {
+                const responseTime = 0;
+                
+                await celebrityContract.connect(addr1).createCelebrity(name, price, responseTime);
+                await requestsContract.connect(addr2).createRequest(addr1.address, {value: price});
+
+                await expect(
+                    requestsContract.connect(addrs[0]).deleteRequest(0)
+                ).to.be.revertedWith('You are not the owner of the request');
+            });
+
         });
 
     });

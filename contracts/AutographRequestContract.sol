@@ -24,6 +24,7 @@ contract AutographRequestContract is Ownable {
 
     // Events
     event RequestCreated(uint id, address indexed from, address indexed to, uint price, uint responseTime, uint created);
+    event RequestDeleted(uint id, address indexed from, address indexed to, uint price, uint responseTime, uint created);
 
     /**
      * Contract constructor.
@@ -50,6 +51,23 @@ contract AutographRequestContract is Ownable {
         uint id = requests.length - 1;
 
         emit RequestCreated(id, newRequest.from, newRequest.to, newRequest.price, newRequest.responseTime, newRequest.created);
+    }
+
+    /**
+     * Method used to remove a request after the locking period expired.
+     * - id: Request index.
+     * - responseTime: Request response time. 
+     */
+    function deleteRequest(uint id) public {
+        Request memory request = requests[id];
+        require(request.from == msg.sender, 'You are not the owner of the request');
+        require(block.timestamp >= request.created + (request.responseTime * 1 days), 'You must wait the response time to delete this request');
+        
+        // Transfering amount payed to user
+        payable(msg.sender).transfer(request.price);
+        delete requests[id];
+
+        emit RequestDeleted(id, request.from, request.to, request.price, request.responseTime, request.created);
     }
 
     /**

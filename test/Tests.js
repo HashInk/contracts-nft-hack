@@ -17,6 +17,8 @@ describe("Hashink Contracts", function () {
     let name;
     let price;
     let responseTime;
+    let hash;
+    let metadata;
 
     beforeEach(async function () {
 
@@ -24,6 +26,8 @@ describe("Hashink Contracts", function () {
         name = "Justin Shenkarow";
         price = ethers.utils.parseEther('2');
         responseTime = 2;
+        hash="8743b52063cd84097a65d1633f5c74f5";
+        metadata="QmTgqnhFBMkfT9s8PHKcdXBn1f5bG3Q5hmBaR4U6hoTvb1";
     
         // Deploying celebrities contract
         CelebrityContract = await ethers.getContractFactory("CelebrityContract");
@@ -120,6 +124,46 @@ describe("Hashink Contracts", function () {
                 await expect(
                     requestsContract.connect(addrs[0]).deleteRequest(0)
                 ).to.be.revertedWith('You are not the owner of the request');
+            });
+
+            it("Should return the payment when a request is deleted", async function () {
+                const responseTime = 0;
+                
+                await celebrityContract.connect(addr1).createCelebrity(name, price, responseTime);
+                await requestsContract.connect(addr2).createRequest(addr1.address, {value: price});
+                const userBalance = await addr2.getBalance();
+
+                await requestsContract.connect(addr2).deleteRequest(0);
+                expect(await requestsContract.getBalance()).to.equal(0);
+                expect(await addr2.getBalance()).to.be.above(userBalance);
+            });
+
+        });
+
+        describe("Sign Request", function() {
+
+            it("Should be able to sign a request", async function () { 
+                const responseTime = 0;
+                const celebBalance = await addr1.getBalance();
+                
+                await celebrityContract.connect(addr1).createCelebrity(name, price, responseTime);
+                await requestsContract.connect(addr2).createRequest(addr1.address, {value: price});
+                expect(await requestsContract.getBalance()).to.equal(price); 
+
+                await requestsContract.connect(addr1).signRequest(0, hash, metadata);
+                expect(await requestsContract.getBalance()).to.equal(0);
+                expect(await addr1.getBalance()).to.be.above(celebBalance);
+            });
+
+            it("Shouldn't be able to sign a request if sender is not the recipient", async function () {    
+                const responseTime = 0;
+                
+                await celebrityContract.connect(addr1).createCelebrity(name, price, responseTime);
+                await requestsContract.connect(addr2).createRequest(addr1.address, {value: price});
+
+                await expect(
+                    requestsContract.connect(addrs[0]).signRequest(0, hash, metadata)
+                ).to.be.revertedWith('You are not the recipient of the request');
             });
 
         });

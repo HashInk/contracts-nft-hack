@@ -25,6 +25,7 @@ contract AutographRequestContract is Ownable {
     // Events
     event RequestCreated(uint id, address indexed from, address indexed to, uint price, uint responseTime, uint created);
     event RequestDeleted(uint id, address indexed from, address indexed to, uint price, uint responseTime, uint created);
+    event RequestSigned(uint id, address indexed from, address indexed to, uint price, uint responseTime, uint created, string nftHash, string metadata);
 
     /**
      * Contract constructor.
@@ -68,6 +69,25 @@ contract AutographRequestContract is Ownable {
         delete requests[id];
 
         emit RequestDeleted(id, request.from, request.to, request.price, request.responseTime, request.created);
+    }
+
+    function signRequest(uint id, string memory nftHash, string memory metadata) public {
+        Request memory request = requests[id];
+
+        require(request.to == msg.sender, 'You are not the recipient of the request');
+        require(address(this).balance >= request.price, 'Balance should be greater than request price');
+
+        // Minting the NFT
+        // TODO: !!!!!!!!!!!!!!!!!!!!!!!
+        // TODO: Check if token has been minted successfully
+
+        // Adding request price to celeb balance
+        address payable addr = payable(request.to);
+
+        // Transfering payment to celebrity
+        addr.transfer(request.price);
+
+        emit RequestSigned(id, request.from, request.to, request.price, request.responseTime, request.created, nftHash, metadata);
     }
 
     /**

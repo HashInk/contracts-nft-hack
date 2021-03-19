@@ -56,18 +56,37 @@ describe("Hashink Contracts", function () {
 
             await expect(
                 celebrityContract.connect(addr1).createCelebrity(name, price, responseTime)
-            )
-            .to.emit(celebrityContract, 'CelebrityCreated');
+            ).to.emit(celebrityContract, 'CelebrityCreated');
             
             const celeb = await celebrityContract.getCelebrity(addr1.address);
             expect(celeb[0]).to.equal(name);
             expect(celeb[1]).to.equal(price);
             expect(celeb[2]).to.equal(responseTime);
+            expect(await celebrityContract.getTotalSupply()).to.equal(1);
+        });
+
+        it("Shouldn't create two celebrities with same address", async function () {
+            await celebrityContract.connect(addr1).createCelebrity("Vitalik Buterin", ethers.utils.parseEther('1'), 4);
+            await expect(
+                celebrityContract.connect(addr1).createCelebrity(name, price, responseTime)
+            ).to.be.revertedWith('This address already exists');
+        });
+
+        it("Should delete a celebrity", async function () {
+            await celebrityContract.connect(addr1).createCelebrity(name, price, responseTime);
+            expect(await celebrityContract.getTotalSupply()).to.equal(1);
+
+            await expect(
+                celebrityContract.connect(addr1).deleteCelebrity()
+            ).to.emit(celebrityContract, 'CelebrityDeleted');
+            expect(await celebrityContract.getTotalSupply()).to.equal(0);
         });
 
         it("Should update celebrity information", async function () {
             await celebrityContract.connect(addr1).createCelebrity("Vitalik Buterin", ethers.utils.parseEther('1'), 4);
-            await celebrityContract.connect(addr1).createCelebrity(name, price, responseTime);
+            await expect (
+                celebrityContract.connect(addr1).updateCelebrity(name, price, responseTime)
+            ).to.emit(celebrityContract, 'CelebrityUpdated');
             
             const celeb = await celebrityContract.getCelebrity(addr1.address);
             expect(celeb[0]).to.equal(name);
@@ -89,6 +108,7 @@ describe("Hashink Contracts", function () {
 
                 expect(await requestsContract.getBalance()).to.equal(price);
                 expect(await requestsContract.getBalance()).to.equal(price);
+                expect(await requestsContract.getTotalSupply()).to.equal(1);
             });
         
         });
@@ -101,9 +121,11 @@ describe("Hashink Contracts", function () {
                 await celebrityContract.connect(addr1).createCelebrity(name, price, responseTime);
                 await requestsContract.connect(addr2).createRequest(addr1.address, {value: price});
                 expect(await requestsContract.getBalance()).to.equal(price);
+                expect(await requestsContract.getTotalSupply()).to.equal(1);
 
                 await requestsContract.connect(addr2).deleteRequest(0);
                 expect(await requestsContract.getBalance()).to.equal(0);
+                expect(await requestsContract.getTotalSupply()).to.equal(0);
             });
 
             it("Shouldn't delete a request before locking period expired", async function () {

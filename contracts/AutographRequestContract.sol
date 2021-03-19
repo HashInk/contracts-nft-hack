@@ -20,6 +20,7 @@ contract AutographRequestContract is Ownable {
     CelebrityContract private celebrityContract;
     AutographContract private autographContract;
     Request[] private requests;
+    uint totalSupply;
     uint private feePercent;
 
     // Events
@@ -52,6 +53,7 @@ contract AutographRequestContract is Ownable {
         Request memory newRequest = Request(msg.sender, to, price, responseTime, block.timestamp);
         requests.push(newRequest);
         uint id = requests.length - 1;
+        totalSupply += 1;
 
         emit RequestCreated(id, newRequest.from, newRequest.to, newRequest.price, newRequest.responseTime, newRequest.created);
     }
@@ -69,6 +71,7 @@ contract AutographRequestContract is Ownable {
         // Transfering amount payed to user
         payable(msg.sender).transfer(request.price);
         delete requests[id];
+        totalSupply -= 1;
 
         emit RequestDeleted(id, request.from, request.to, request.price, request.responseTime, request.created);
     }
@@ -102,6 +105,13 @@ contract AutographRequestContract is Ownable {
      */
     function getBalance() public view returns (uint) {
         return address(this).balance;
+    }
+
+    /**
+     * Gets number of requests pending.
+     */
+    function getTotalSupply() public view returns (uint) {
+        return totalSupply;
     }
 
     /**

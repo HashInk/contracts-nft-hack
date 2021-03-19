@@ -145,7 +145,7 @@ describe("Hashink Contracts", function () {
             it("Should be able to sign a request", async function () { 
                 const responseTime = 0;
                 const celebBalance = await addr1.getBalance();
-                
+
                 await celebrityContract.connect(addr1).createCelebrity(name, price, responseTime);
                 await requestsContract.connect(addr2).createRequest(addr1.address, {value: price});
                 expect(await requestsContract.getBalance()).to.equal(price); 
@@ -164,6 +164,22 @@ describe("Hashink Contracts", function () {
                 await expect(
                     requestsContract.connect(addrs[0]).signRequest(0, hash, metadata)
                 ).to.be.revertedWith('You are not the recipient of the request');
+            });
+
+            it("Should send fees to owner when signing a request", async function () {
+                const feePercent = await requestsContract.connect(owner).getFeePercent();
+                const fee = price * feePercent / 100;
+                const ownerBalance = await owner.getBalance();
+                const celebBalance = await addr1.getBalance();
+
+                await celebrityContract.connect(addr1).createCelebrity(name, price, responseTime);
+                await requestsContract.connect(addr2).createRequest(addr1.address, {value: price});                
+                await requestsContract.connect(addr1).signRequest(0, hash, metadata);
+                
+                const expectedOwnerBalance = BigNumber(ownerBalance.toString()).plus(fee);
+                const currentOwnerBalance = await owner.getBalance();
+                expect(BigNumber(currentOwnerBalance.toString()).toString()).to.equal(expectedOwnerBalance.toString());
+                expect(await addr1.getBalance()).to.be.above(celebBalance);
             });
 
         });

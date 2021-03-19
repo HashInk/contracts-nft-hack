@@ -26,6 +26,7 @@ contract AutographRequestContract is Ownable {
     event RequestCreated(uint id, address indexed from, address indexed to, uint price, uint responseTime, uint created);
     event RequestDeleted(uint id, address indexed from, address indexed to, uint price, uint responseTime, uint created);
     event RequestSigned(uint id, address indexed from, address indexed to, uint price, uint responseTime, uint created, string nftHash, string metadata);
+    event FeePercentChanged(uint feePercent);
 
     /**
      * Contract constructor.
@@ -83,9 +84,14 @@ contract AutographRequestContract is Ownable {
 
         // Adding request price to celeb balance
         address payable addr = payable(request.to);
+        address payable ownerAddr = payable(owner());
+
+        // Calculating and transfering fees
+        uint fee = request.price * feePercent / 100;
+        ownerAddr.transfer(fee);
 
         // Transfering payment to celebrity
-        addr.transfer(request.price);
+        addr.transfer(request.price - fee);
 
         emit RequestSigned(id, request.from, request.to, request.price, request.responseTime, request.created, nftHash, metadata);
     }
@@ -95,6 +101,21 @@ contract AutographRequestContract is Ownable {
      */
     function getBalance() public view returns (uint) {
         return address(this).balance;
+    }
+
+    /**
+     * Sets fees percent.
+     */
+    function setFeePercent(uint _feePercent) public onlyOwner {
+        feePercent = _feePercent;
+        emit FeePercentChanged(feePercent);
+    }
+
+    /**
+     * Returns contract fee percent.
+     */
+    function getFeePercent() public view onlyOwner returns (uint) {
+        return feePercent;
     }
 
 }

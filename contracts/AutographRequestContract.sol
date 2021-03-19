@@ -76,6 +76,12 @@ contract AutographRequestContract is Ownable {
         emit RequestDeleted(id, request.from, request.to, request.price, request.responseTime, request.created);
     }
 
+    /**
+     * Method used to sign a pending request.
+     * - id: Request index.
+     * - nftHash: NFT hash parameter.
+     * - metadata: Autograph metadata.
+     */
     function signRequest(uint id, string memory nftHash, string memory metadata) public {
         Request memory request = requests[id];
 

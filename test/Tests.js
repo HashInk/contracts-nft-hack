@@ -82,6 +82,17 @@ describe("Hashink Contracts", function () {
             expect(await celebrityContract.getTotalSupply()).to.equal(0);
         });
 
+        it("Should create a celebrity after being deleted", async function () {
+            await celebrityContract.connect(addr1).createCelebrity(name, price, responseTime);
+            expect(await celebrityContract.getTotalSupply()).to.equal(1);
+
+            await celebrityContract.connect(addr1).deleteCelebrity();
+            expect(await celebrityContract.getTotalSupply()).to.equal(0)
+                
+            await celebrityContract.connect(addr1).createCelebrity(name, price, responseTime);
+            expect(await celebrityContract.getTotalSupply()).to.equal(1);
+        });        
+
         it("Should update celebrity information", async function () {
             await celebrityContract.connect(addr1).createCelebrity("Vitalik Buterin", ethers.utils.parseEther('1'), 4);
             await expect (
@@ -170,11 +181,13 @@ describe("Hashink Contracts", function () {
 
                 await celebrityContract.connect(addr1).createCelebrity(name, price, responseTime);
                 await requestsContract.connect(addr2).createRequest(addr1.address, {value: price});
-                expect(await requestsContract.getBalance()).to.equal(price); 
+                expect(await requestsContract.getBalance()).to.equal(price);
+                expect(await requestsContract.getTotalSupply()).to.equal(1);
 
                 await requestsContract.connect(addr1).signRequest(0, hash, metadata);
                 expect(await requestsContract.getBalance()).to.equal(0);
                 expect(await addr1.getBalance()).to.be.above(celebBalance);
+                expect(await requestsContract.getTotalSupply()).to.equal(0);
             });
 
             it("Shouldn't be able to sign a request if sender is not the recipient", async function () {    
@@ -202,6 +215,18 @@ describe("Hashink Contracts", function () {
                 const currentOwnerBalance = await owner.getBalance();
                 expect(BigNumber(currentOwnerBalance.toString()).toString()).to.equal(expectedOwnerBalance.toString());
                 expect(await addr1.getBalance()).to.be.above(celebBalance);
+            });
+
+            it("Shouldn't be able to sign a request that doesn't exist", async function () {    
+                const responseTime = 0;
+                
+                await celebrityContract.connect(addr1).createCelebrity(name, price, responseTime);
+                await requestsContract.connect(addr2).createRequest(addr1.address, {value: price});
+                await requestsContract.connect(addr2).deleteRequest(0);
+
+                await expect(
+                    requestsContract.connect(addr1).signRequest(0, hash, metadata)
+                ).to.be.reverted;
             });
 
         });

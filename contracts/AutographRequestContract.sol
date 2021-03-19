@@ -83,8 +83,8 @@ contract AutographRequestContract is Ownable {
         require(address(this).balance >= request.price, 'Balance should be greater than request price');
 
         // Minting the NFT
-        autographContract.mint(request.from, nftHash, metadata);
-        // TODO: Check if token has been minted successfully
+        uint tokenId = autographContract.mint(request.from, nftHash, metadata);
+        require(autographContract.ownerOf(tokenId) == request.from, 'Token was not created correctly');
 
         // Adding request price to celeb balance
         address payable addr = payable(request.to);
@@ -96,6 +96,10 @@ contract AutographRequestContract is Ownable {
 
         // Transfering payment to celebrity
         addr.transfer(request.price - fee);
+
+        // Deleting request
+        delete requests[id];
+        totalSupply -= 1;
 
         emit RequestSigned(id, request.from, request.to, request.price, request.responseTime, request.created, nftHash, metadata);
     }

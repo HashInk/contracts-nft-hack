@@ -40,8 +40,8 @@
       ]
     },
     "D:\\Work\\hashink\\hashink-contracts\\contracts\\AutographRequestContract.sol": {
-      "lastModificationDate": 1616190061614,
-      "contentHash": "d8140d41983d148b3570639efad2146f",
+      "lastModificationDate": 1616191242240,
+      "contentHash": "c9606dde1ca29d6ae9489e75f6dbce23",
       "sourceName": "contracts/AutographRequestContract.sol",
       "solcConfig": {
         "version": "0.7.3",

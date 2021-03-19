@@ -1,4 +1,4 @@
-# Hashink Contracts
+# HashInk Contracts
 
 ## Celebrity Contract
 

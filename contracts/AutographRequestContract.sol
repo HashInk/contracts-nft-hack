@@ -148,6 +148,15 @@ contract AutographRequestContract is Ownable {
         return address(this).balance;
     }
 
+    // /**
+    //  * Gets celebrity information by address.
+    //  * - addr: Celebrity account address.
+    //  */
+    // function getRequest(uint id) public view returns (
+    //     uint id, string memory name, uint price, uint responseTime) {
+    //     return (celebrities[addr].id, celebrities[addr].name, celebrities[addr].price, celebrities[addr].responseTime);
+    // }
+
     /**
      * Gets number of requests pending.
      */

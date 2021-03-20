@@ -54,13 +54,14 @@ contract CelebrityContract {
     /**
      * Delete a celebrity.
      */
-    function deleteCelebrity() public {
-        uint id = celebrities[msg.sender].id;
-        delete celebrities[msg.sender];
+    function deleteCelebrity(address addr) public {
+        require(addr == msg.sender, 'You are not the owner');
+        uint id = celebrities[addr].id;
+        delete celebrities[addr];
         delete celebrityAddresses[id];
         totalSupply -= 1;
         
-        emit CelebrityDeleted(id, msg.sender);
+        emit CelebrityDeleted(id, addr);
     }
 
     /**
@@ -82,8 +83,8 @@ contract CelebrityContract {
      * - addr: Celebrity account address.
      */
     function getCelebrity(address addr) public view returns (
-        string memory name, uint price, uint responseTime) {
-        return (celebrities[addr].name, celebrities[addr].price, celebrities[addr].responseTime);
+        uint id, string memory name, uint price, uint responseTime) {
+        return (celebrities[addr].id, celebrities[addr].name, celebrities[addr].price, celebrities[addr].responseTime);
     }
 
     /**

@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "D:\\Work\\hashink\\hashink-contracts\\contracts\\AutographContract.sol": {
-      "lastModificationDate": 1616186945469,
-      "contentHash": "ac41f7a9c47921a5923edf8192def7f2",
+      "lastModificationDate": 1616247457921,
+      "contentHash": "9e5fca988b9688ba649be7f03db99223",
       "sourceName": "contracts/AutographContract.sol",
       "solcConfig": {
         "version": "0.7.3",
@@ -572,8 +572,8 @@
       ]
     },
     "D:\\Work\\hashink\\hashink-contracts\\contracts\\AutographRequestContract.sol": {
-      "lastModificationDate": 1616191300999,
-      "contentHash": "c9606dde1ca29d6ae9489e75f6dbce23",
+      "lastModificationDate": 1616247104323,
+      "contentHash": "b12ad0ff3bca44d73d023a522ae08e3d",
       "sourceName": "contracts/AutographRequestContract.sol",
       "solcConfig": {
         "version": "0.7.3",
@@ -646,8 +646,8 @@
       ]
     },
     "D:\\Work\\hashink\\hashink-contracts\\contracts\\CelebrityContract.sol": {
-      "lastModificationDate": 1616190069293,
-      "contentHash": "4b3cc3179f6ab4e0a34bc0fc60891909",
+      "lastModificationDate": 1616250920757,
+      "contentHash": "c0dc8a1588d997967f0dee2098b36280",
       "sourceName": "contracts/CelebrityContract.sol",
       "solcConfig": {
         "version": "0.7.3",

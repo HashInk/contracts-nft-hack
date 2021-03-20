@@ -46,7 +46,7 @@ contract AutographRequestContract is Ownable {
      * - responseTime: Request response time.
      */
     function createRequest(address to) public payable {     
-        (,uint price, uint responseTime) = celebrityContract.getCelebrity(to);
+        (,,uint price, uint responseTime) = celebrityContract.getCelebrity(to);
         require(msg.value == price, 'The amount paid is not equal to the sale price');
 
         // Adding paid price to contract balance

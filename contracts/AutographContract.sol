@@ -13,14 +13,11 @@ contract AutographContract is ERC721 {
     Counters.Counter private tokenIds;
     mapping(string => uint8) hashes;
 
-    // Events
-    event Minted(uint id, address owner);
-
     /**
      * Contract constructor.
      */
-    constructor() ERC721("HashInk Token", "INK") {
-        _setBaseURI("https://ipfs.io/ipfs/");
+    constructor() ERC721("HashInk Token", "HINK") {
+        //_setBaseURI("https://ipfs.io/ipfs/");
     }
 
     /** 
@@ -38,7 +35,6 @@ contract AutographContract is ERC721 {
         _safeMint(to, id);
         _setTokenURI(id, metadata);
 
-        emit Minted(id, to);
         return id;
     }
 

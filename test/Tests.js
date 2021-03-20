@@ -59,9 +59,9 @@ describe("Hashink Contracts", function () {
             ).to.emit(celebrityContract, 'CelebrityCreated');
             
             const celeb = await celebrityContract.getCelebrity(addr1.address);
-            expect(celeb[0]).to.equal(name);
-            expect(celeb[1]).to.equal(price);
-            expect(celeb[2]).to.equal(responseTime);
+            expect(celeb[1]).to.equal(name);
+            expect(celeb[2]).to.equal(price);
+            expect(celeb[3]).to.equal(responseTime);
             expect(await celebrityContract.getTotalSupply()).to.equal(1);
         });
 
@@ -77,7 +77,7 @@ describe("Hashink Contracts", function () {
             expect(await celebrityContract.getTotalSupply()).to.equal(1);
 
             await expect(
-                celebrityContract.connect(addr1).deleteCelebrity()
+                celebrityContract.connect(addr1).deleteCelebrity(addr1.address)
             ).to.emit(celebrityContract, 'CelebrityDeleted');
             expect(await celebrityContract.getTotalSupply()).to.equal(0);
         });
@@ -86,12 +86,20 @@ describe("Hashink Contracts", function () {
             await celebrityContract.connect(addr1).createCelebrity(name, price, responseTime);
             expect(await celebrityContract.getTotalSupply()).to.equal(1);
 
-            await celebrityContract.connect(addr1).deleteCelebrity();
+            await celebrityContract.connect(addr1).deleteCelebrity(addr1.address);
             expect(await celebrityContract.getTotalSupply()).to.equal(0)
                 
             await celebrityContract.connect(addr1).createCelebrity(name, price, responseTime);
             expect(await celebrityContract.getTotalSupply()).to.equal(1);
-        });        
+        });
+
+        it("Shouldn't delete a celebrity if caller isn't the owner", async function () {
+            await celebrityContract.connect(addr1).createCelebrity(name, price, responseTime);
+            
+            await expect (
+                celebrityContract.connect(addrs[0]).deleteCelebrity(addr1.address)
+            ).to.be.revertedWith('You are not the owner');
+        });
 
         it("Should update celebrity information", async function () {
             await celebrityContract.connect(addr1).createCelebrity("Vitalik Buterin", ethers.utils.parseEther('1'), 4);
@@ -100,9 +108,9 @@ describe("Hashink Contracts", function () {
             ).to.emit(celebrityContract, 'CelebrityUpdated');
             
             const celeb = await celebrityContract.getCelebrity(addr1.address);
-            expect(celeb[0]).to.equal(name);
-            expect(celeb[1]).to.equal(price);
-            expect(celeb[2]).to.equal(responseTime);
+            expect(celeb[1]).to.equal(name);
+            expect(celeb[2]).to.equal(price);
+            expect(celeb[3]).to.equal(responseTime);
         });
     
     });
@@ -118,8 +126,19 @@ describe("Hashink Contracts", function () {
                 .to.emit(requestsContract, 'RequestCreated');
 
                 expect(await requestsContract.getBalance()).to.equal(price);
-                expect(await requestsContract.getBalance()).to.equal(price);
                 expect(await requestsContract.getTotalSupply()).to.equal(1);
+            });
+
+            it("Should create many requests for a celebrity", async function () {
+                price = ethers.utils.parseEther('2');
+                await celebrityContract.connect(addr1).createCelebrity(name, price, responseTime);
+                
+                await requestsContract.connect(addr2).createRequest(addr1.address, {value: price});
+                await requestsContract.connect(addrs[0]).createRequest(addr1.address, {value: price});
+                await requestsContract.connect(addrs[1]).createRequest(addr1.address, {value: price});
+
+                expect(await requestsContract.getBalance()).to.equal(ethers.utils.parseEther('6'));
+                expect(await requestsContract.getTotalSupply()).to.equal(3);
             });
         
         });

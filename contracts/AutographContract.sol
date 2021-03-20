@@ -1,5 +1,5 @@
 //SPDX-License-Identifier: MIT
-pragma solidity ^0.7.0;
+pragma solidity ^0.6.8;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
@@ -16,7 +16,7 @@ contract AutographContract is ERC721 {
     /**
      * Contract constructor.
      */
-    constructor() ERC721("HashInk Token", "HINK") {
+    constructor() public ERC721("HashInk Token", "HINK") {
         //_setBaseURI("https://ipfs.io/ipfs/");
     }
 

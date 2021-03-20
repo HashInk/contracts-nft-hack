@@ -1,9 +1,12 @@
 //SPDX-License-Identifier: MIT
-pragma solidity ^0.7.0;
+pragma solidity ^0.6.8;
 
+import "@zoralabs/core/dist/contracts/Media.sol";
+//import "@zoralabs/core/dist/contracts/interfaces/IMedia.sol";
+//import "@zoralabs/core/dist/contracts/interfaces/IMarket.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./CelebrityContract.sol";
-import "./AutographContract.sol";
+//import "./AutographContract.sol";
 
 contract AutographRequestContract is Ownable {
 
@@ -16,9 +19,23 @@ contract AutographRequestContract is Ownable {
         uint created;
     }
 
+    // struct MediaData {
+    //     string tokenURI;
+    //     string metadataURI;
+    //     bytes32 contentHash;
+    //     bytes32 metadataHash;
+    // }
+
+    // struct BidShares {
+    //     Decimal.D256 prevOwner;
+    //     Decimal.D256 creator;
+    //     Decimal.D256 owner;
+    // }
+
     // Variables
+    Media private media;
     CelebrityContract private celebrityContract;
-    AutographContract private autographContract;
+    //AutographContract private autographContract;
     Request[] private requests;
     uint totalSupply;
     uint private feePercent;
@@ -26,7 +43,7 @@ contract AutographRequestContract is Ownable {
     // Events
     event RequestCreated(uint id, address indexed from, address indexed to, uint price, uint responseTime, uint created);
     event RequestDeleted(uint id, address indexed from, address indexed to, uint price, uint responseTime, uint created);
-    event RequestSigned(uint id, address indexed from, address indexed to, uint price, uint responseTime, uint created, string nftHash, string metadata);
+    event RequestSigned(uint id, address indexed from, address indexed to, uint price, uint responseTime, uint created);
     event FeePercentChanged(uint feePercent);
 
     /**
@@ -34,9 +51,10 @@ contract AutographRequestContract is Ownable {
      * - _celebrityContract: Celebrity contract address.
      * - _autographContract: NFT Token address.
      */
-    constructor(address _celebrityContract, address _autographContract) {
+    constructor(address _celebrityContract, address _autographContract) public {
         celebrityContract = CelebrityContract(_celebrityContract);
-        autographContract = AutographContract(_autographContract);
+        //autographContract = AutographContract(_autographContract);
+        media = Media(0x7C2668BD0D3c050703CEcC956C11Bd520c26f7d4);
         feePercent = 10; // %
     }
 
@@ -82,15 +100,28 @@ contract AutographRequestContract is Ownable {
      * - nftHash: NFT hash parameter.
      * - metadata: Autograph metadata.
      */
-    function signRequest(uint id, string memory nftHash, string memory metadata) public {
+    //function signRequest(uint id, MediaData memory data, BidShares memory bidShares) public {
+    function signRequest(
+        uint id, 
+        string memory tokenURI,
+        string memory metadataURI,
+        bytes32 contentHash,
+        bytes32 metadataHash
+        ) public {
+
         Request memory request = requests[id];
 
         require(request.to == msg.sender, 'You are not the recipient of the request');
         require(address(this).balance >= request.price, 'Balance should be greater than request price');
 
         // Minting the NFT
-        uint tokenId = autographContract.mint(request.from, nftHash, metadata);
-        require(autographContract.ownerOf(tokenId) == request.from, 'Token was not created correctly');
+        // uint tokenId = autographContract.mint(request.from, nftHash, metadata);
+        // require(autographContract.ownerOf(tokenId) == request.from, 'Token was not created correctly');
+        Media.MediaData memory data = Media.MediaData(tokenURI, metadataURI, contentHash, metadataHash);
+        //IMarket.BidShares memory bidShares = IMarket.BidShares(Decimal.D256(0), Decimal.D256(10), Decimal.D256(90));
+        //media.mint(data, bidShares);
+        
+        //???????????????????????????????????????????
 
         // Adding request price to celeb balance
         address payable addr = payable(request.to);
@@ -107,7 +138,7 @@ contract AutographRequestContract is Ownable {
         delete requests[id];
         totalSupply -= 1;
 
-        emit RequestSigned(id, request.from, request.to, request.price, request.responseTime, request.created, nftHash, metadata);
+        emit RequestSigned(id, request.from, request.to, request.price, request.responseTime, request.created);
     }
 
     /**

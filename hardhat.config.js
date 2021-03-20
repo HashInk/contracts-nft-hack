@@ -8,7 +8,7 @@ let rinkeby_private_key = process.env.RINKEBY_PRIVATE_KEY;
 let ropsten_private_key = process.env.ROPSTEN_PRIVATE_KEY;
 
 module.exports = {
-  solidity: "0.7.3",
+  solidity: "0.6.8",
   networks: {
     rinkeby: {
       url: `https://rinkeby.infura.io/v3/${infura_api_key}`,

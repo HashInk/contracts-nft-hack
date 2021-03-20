@@ -1,5 +1,5 @@
 //SPDX-License-Identifier: MIT
-pragma solidity ^0.7.0;
+pragma solidity ^0.6.8;
 
 import "hardhat/console.sol";
 
@@ -30,7 +30,7 @@ contract CelebrityContract {
     /**
      * Constructor method.
      */
-    constructor () {}
+    constructor () public {}
 
     /**
      * Function used to request a new NFT (autograph) to a celeb.

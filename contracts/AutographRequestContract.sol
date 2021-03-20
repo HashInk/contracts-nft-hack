@@ -118,6 +118,21 @@ contract AutographRequestContract is Ownable {
     }
 
     /**
+     * Gets request information by id.
+     * - id: Request identifier.
+     */
+    function getRequest(uint id) public view returns (
+        address from, address to, uint price, uint responseTime, uint created) {
+        return (
+            requests[id].from, 
+            requests[id].to, 
+            requests[id].price,
+            requests[id].responseTime,
+            requests[id].created
+        );
+    }
+
+    /**
      * Gets number of requests pending.
      */
     function getTotalSupply() public view returns (uint) {

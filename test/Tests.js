@@ -129,6 +129,17 @@ describe("Hashink Contracts", function () {
                 expect(await requestsContract.getTotalSupply()).to.equal(1);
             });
 
+            it("Should retrieve request info after create a new request", async function () {
+                await celebrityContract.connect(addr1).createCelebrity(name, price, responseTime);
+                await requestsContract.connect(addr2).createRequest(addr1.address, {value: price});
+
+                const request = await requestsContract.getRequest(0);
+                expect(request[0]).to.equal(addr2.address);
+                expect(request[1]).to.equal(addr1.address);
+                expect(request[2]).to.equal(price);
+                expect(request[3]).to.equal(responseTime);
+            });
+
             it("Should create many requests for a celebrity", async function () {
                 price = ethers.utils.parseEther('2');
                 await celebrityContract.connect(addr1).createCelebrity(name, price, responseTime);

@@ -162,11 +162,12 @@ describe("Hashink Contracts", function () {
                 await celebrityContract.connect(addr1).createCelebrity(name, price, responseTime);
                 await requestsContract.connect(addr2).createRequest(addr1.address, {value: price});
                 expect(await requestsContract.getBalance()).to.equal(price);
-                expect(await requestsContract.getTotalSupply()).to.equal(1);
+                expect(await requestsContract.getNumberOfPendingRequests()).to.equal(1);
 
                 await requestsContract.connect(addr2).deleteRequest(0);
                 expect(await requestsContract.getBalance()).to.equal(0);
-                expect(await requestsContract.getTotalSupply()).to.equal(0);
+                expect(await requestsContract.getNumberOfPendingRequests()).to.equal(0);
+                expect(await requestsContract.getTotalSupply()).to.equal(1);
             });
 
             it("Shouldn't delete a request before locking period expired", async function () {
@@ -217,7 +218,8 @@ describe("Hashink Contracts", function () {
                 await requestsContract.connect(addr1).signRequest(0, hash, metadata);
                 expect(await requestsContract.getBalance()).to.equal(0);
                 expect(await addr1.getBalance()).to.be.above(celebBalance);
-                expect(await requestsContract.getTotalSupply()).to.equal(0);
+                expect(await requestsContract.getNumberOfPendingRequests()).to.equal(0);
+                expect(await requestsContract.getTotalSupply()).to.equal(1);
             });
 
             it("Shouldn't be able to sign a request if sender is not the recipient", async function () {    

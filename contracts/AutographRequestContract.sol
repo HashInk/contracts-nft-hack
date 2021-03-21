@@ -2,8 +2,8 @@
 pragma solidity ^0.6.8;
 
 import "@zoralabs/core/dist/contracts/Media.sol";
-//import "@zoralabs/core/dist/contracts/interfaces/IMedia.sol";
-//import "@zoralabs/core/dist/contracts/interfaces/IMarket.sol";
+import "@zoralabs/core/dist/contracts/interfaces/IMedia.sol";
+import "@zoralabs/core/dist/contracts/interfaces/IMarket.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./CelebrityContract.sol";
 //import "./AutographContract.sol";
@@ -115,11 +115,9 @@ contract AutographRequestContract is Ownable {
         require(address(this).balance >= request.price, 'Balance should be greater than request price');
 
         // Minting the NFT
-        // uint tokenId = autographContract.mint(request.from, nftHash, metadata);
-        // require(autographContract.ownerOf(tokenId) == request.from, 'Token was not created correctly');
         Media.MediaData memory data = Media.MediaData(tokenURI, metadataURI, contentHash, metadataHash);
-        //IMarket.BidShares memory bidShares = IMarket.BidShares(Decimal.D256(0), Decimal.D256(10), Decimal.D256(90));
-        //media.mint(data, bidShares);
+        IMarket.BidShares memory bidShares = IMarket.BidShares(Decimal.D256(0), Decimal.D256(10), Decimal.D256(90));
+        media.mint(data, bidShares);
         
         //???????????????????????????????????????????
 

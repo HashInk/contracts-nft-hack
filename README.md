@@ -1,4 +1,17 @@
-# HashInk Contracts
+This is a [HardHat](https://hardhat.org/) project.
+
+# Getting Started
+
+First run this command to install dependencies:
+
+```
+npm install
+```
+Then you can execute the tests:
+
+```
+npx hardhat test
+```
 
 ## Celebrity Contract
 
